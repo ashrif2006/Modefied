@@ -9,10 +9,11 @@ class Node:
         self.right = right
 
 class ModifiedHuffman:
+    #convert file to string
     def read_file(self, input_path):
         with open(input_path, "r", encoding="utf-8") as file:
             return file.read()
-
+    #return a dictionary of frequencies of each symbol in the data
     def calculate_frequencies(self, data):
         frequencies = {}
         for symbol in data:
@@ -51,6 +52,9 @@ class ModifiedHuffman:
 
         while len(nodes) > 1:
             nodes.sort(key=lambda node: node.probability)
+            
+            #for the next operations we take the 2 smallest nodes and combine them into a new parent node and remove this 2 nodes from the list and add the new parent node to the list
+            
             left = nodes.pop(0)
             right = nodes.pop(0)
             parent = Node(
@@ -62,7 +66,7 @@ class ModifiedHuffman:
             nodes.append(parent)
 
         if nodes:
-            return nodes[0]
+            return nodes[0] #Root of the tree
         return None
 
     def generate_codes(self, root):
@@ -168,6 +172,38 @@ class ModifiedHuffman:
             file.write("".join(result))
             
 
-huffman = ModifiedHuffman()
-huffman.compress("input.txt", "compressed.json", 0.05)
-huffman.decompress("compressed.json", "output.txt")            
+
+def main():
+    huffman = ModifiedHuffman()
+    print("Modified Huffman Compression and Decompression")
+    print("1. Compress a file")
+    print("2. Decompress a file")
+    choice = input("Enter your choice (1 or 2): ").strip()
+    if choice =="1":
+        input_path = input("Enter the path of the file to compress: ").strip()
+        output_path = input("Enter the path to save the compressed file (e.g., compressed.json): ").strip()
+        min_probability = float(input("Enter the minimum probability threshold (e.g., 0.05): ").strip())
+        try:
+            huffman.compress(input_path, output_path, min_probability)
+            print(f"File compressed successfully and saved to {output_path}.")
+        except Exception as e:
+            print(f"Error during compression: {e}")
+    elif choice == "2":
+        input_path = input("Enter the path of the compressed file: ").strip()
+        output_path = input("Enter the path to save the decompressed file: ").strip()
+        try:
+            huffman.decompress(input_path, output_path)
+            print(f"File decompressed successfully and saved to {output_path}.")
+        except Exception as e:
+            print(f"Error during decompression: {e}")
+    else:
+        print("Invalid choice. Please enter 1 or 2.")
+        main()
+if __name__ == "__main__":
+    main()                    
+        
+
+
+# huffman = ModifiedHuffman()
+# huffman.compress(r"E:\compression Ass\Modefied\Modified-Huffman\input.txt", "compressed.json", 0.05)
+# huffman.decompress("compressed.json", "output.txt")            
